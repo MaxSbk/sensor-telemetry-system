@@ -1,6 +1,7 @@
 import sbt._
 
-lazy val microservice =
+lazy val sensorManagement =
   Project(id = "sensor-management", base = file("."))
     .enablePlugins(JavaAppPackaging)
-    .settings(Settings.settings)
+    .settings(Settings.settings,
+      mainClass in (Compile) := Some("ru.maxsbk.experimental.sensormanagement.Main"))

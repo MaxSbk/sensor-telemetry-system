@@ -8,7 +8,7 @@ object Settings {
   }
 
   lazy val settings = Seq(
-    organization := "ru.neoflex.okb",
+    organization := "ru.maxsbk",
     version := "0.1",
     scalaVersion := ScalaVersion.It,
     scalacOptions ++= CompileOptions.compileOptions,
