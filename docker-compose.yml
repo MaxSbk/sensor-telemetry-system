@@ -1,0 +1,60 @@
+version: '3.4'
+services:
+  influx_db:
+    image: 'influxdb:latest'
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 20s
+        order: start-first
+    networks:
+      - influxdb_net
+    ports:
+      - '8083:8083'
+      - '8086:8086'
+      - '2003:2003'
+    volumes:
+      - 'influxdb-storage:/var/lib/influxdb'
+    environment:
+      INFLUXDB_DB: sensors_db
+      INFLUXDB_WRITE_USER: sensor_app
+      INFLUXDB_WRITE_USER_PASSWORD: sensor_app
+      INFLUXDB_ADMIN_USER: sensors
+      INFLUXDB_ADMIN_PASSWORD: sensors
+      
+  chronograf:
+    image: 'chronograf:latest'
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 20s
+        order: start-first
+    networks:
+      - influxdb_net
+    ports:
+      - '8088:8088'
+      - '8888:8888'
+    volumes:
+      - 'chronograf-storage:/var/lib/chronograf'
+    environment:
+      INFLUXDB_URL: 'http://influx_db:8086'
+      INFLUXDB_USERNAME: sensors
+      INFLUXDB_PASSWORD: sensors
+      
+  sensors_app:
+    build: './target/docker/stage'
+    networks:
+      - influxdb_net
+    environment:
+      INFLUXDB_URL: 'http://172.20.0.3:8086'
+      INFLUXDB_DBNAME: sensors_db
+      INFLUXDB_USERNAME: sensors
+      INFLUXDB_PASSWORD: sensors
+      
+networks:
+  influxdb_net: null
+volumes:
+  influxdb-storage: null
+  chronograf-storage: null
