@@ -1,6 +1,6 @@
 version: '3.4'
 services:
-  influx_db:
+  influxdb:
     image: 'influxdb:latest'
     deploy:
       replicas: 1
@@ -8,6 +8,7 @@ services:
         parallelism: 1
         delay: 20s
         order: start-first
+    hostname: influxdb
     networks:
       - influxdb_net
     ports:
@@ -17,6 +18,7 @@ services:
     volumes:
       - 'influxdb-storage:/var/lib/influxdb'
     environment:
+      INFLUXDB_HOSTNAME: influxdb
       INFLUXDB_DB: sensors_db
       INFLUXDB_WRITE_USER: sensor_app
       INFLUXDB_WRITE_USER_PASSWORD: sensor_app
@@ -39,7 +41,7 @@ services:
     volumes:
       - 'chronograf-storage:/var/lib/chronograf'
     environment:
-      INFLUXDB_URL: 'http://influx_db:8086'
+      INFLUXDB_URL: http://influxdb:8086
       INFLUXDB_USERNAME: sensors
       INFLUXDB_PASSWORD: sensors
       
@@ -48,7 +50,7 @@ services:
     networks:
       - influxdb_net
     environment:
-      INFLUXDB_URL: 'http://172.20.0.3:8086'
+      INFLUXDB_URL: http://influxdb:8086
       INFLUXDB_DBNAME: sensors_db
       INFLUXDB_USERNAME: sensors
       INFLUXDB_PASSWORD: sensors
