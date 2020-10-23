@@ -1,0 +1,34 @@
+{
+  "namespace": "ru.maxsbk.sensortelemetrysystem.models",
+  "type": "record",
+  "name": "SensorInfo",
+  "doc": "Информация о датчике",
+  "fields": [
+    {
+      "name": "name",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "Наименование датчика"
+    },
+    {
+      "name": "id",
+      "type": "string",
+      "doc": "Уникальный идентификатор датчика"
+    },
+    {
+      "name": "manufactureDate",
+      "type": {
+        "type": "int",
+        "logicalType": "date"
+      },
+      "doc": "Дата производства датчика"
+    },
+    {
+      "name": "sensorType",
+      "type": "SensorType",
+      "doc": "Тип датчика"
+    }
+  ]
+}

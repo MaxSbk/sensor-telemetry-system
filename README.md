@@ -1,1 +1,1 @@
-# sensor-management
+# sensor-telemetry-system

@@ -1,5 +1,31 @@
 version: '3.4'
 services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka_net
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    ports:
+     - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    networks:
+      - kafka_net
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
   influxdb:
     image: 'influxdb:latest'
     deploy:
@@ -24,7 +50,6 @@ services:
       INFLUXDB_WRITE_USER_PASSWORD: sensor_app
       INFLUXDB_ADMIN_USER: sensors
       INFLUXDB_ADMIN_PASSWORD: sensors
-      
   chronograf:
     image: 'chronograf:latest'
     deploy:
@@ -33,6 +58,8 @@ services:
         parallelism: 1
         delay: 20s
         order: start-first
+    depends_on:
+      - influxdb
     networks:
       - influxdb_net
     ports:
@@ -41,22 +68,39 @@ services:
     volumes:
       - 'chronograf-storage:/var/lib/chronograf'
     environment:
-      INFLUXDB_URL: http://influxdb:8086
+      INFLUXDB_URL: 'http://influxdb:8086'
       INFLUXDB_USERNAME: sensors
       INFLUXDB_PASSWORD: sensors
-      
-  sensors_app:
-    build: './target/docker/stage'
+  data-ingestor:
+    build: ./sensor-data-ingestor/target/docker/stage
+    depends_on:
+      - influxdb
+      - kafka
     networks:
       - influxdb_net
+      - kafka_net
     environment:
-      INFLUXDB_URL: http://influxdb:8086
+      INFLUXDB_URL: 'http://influxdb:8086'
       INFLUXDB_DBNAME: sensors_db
       INFLUXDB_USERNAME: sensors
       INFLUXDB_PASSWORD: sensors
-      
+      KAFKA_URL: 'http://kafka:29092'
+      KAFKA_TOPIC: sensor-data
+  rest-adapter:
+    build: ./rest-sensor-data-adapter/target/docker/stage
+    depends_on:
+      - kafka
+      - data-ingestor
+    ports:
+      - '8080:8080'
+    networks:
+      - kafka_net
+    environment:
+      KAFKA_URL: 'http://kafka:29092'
+      KAFKA_TOPIC: sensor-data
 networks:
   influxdb_net: null
+  kafka_net: null
 volumes:
   influxdb-storage: null
   chronograf-storage: null

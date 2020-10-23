@@ -13,6 +13,6 @@ object Settings {
     scalaVersion := ScalaVersion.It,
     scalacOptions ++= CompileOptions.compileOptions,
     scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value,
-    libraryDependencies ++= Dependencies.dependencies
+    //libraryDependencies ++= Dependencies.CommonDependencies
   )
 }
