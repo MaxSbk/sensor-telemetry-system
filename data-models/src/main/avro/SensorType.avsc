@@ -1,0 +1,16 @@
+{
+  "namespace": "ru.maxsbk.sensortelemetrysystem.models",
+  "type": "enum",
+  "name": "SensorType",
+  "doc": "Тип датчика",
+  "symbols": [
+    "TEMPERATURE",
+    "PRESSURE",
+    "RADIATION",
+    "LEVEL",
+    "HUMIDITY",
+    "GAS",
+    "FLAME",
+    "ELECTRICAL"
+  ]
+}

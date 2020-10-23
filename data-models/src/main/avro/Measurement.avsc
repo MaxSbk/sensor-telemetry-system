@@ -1,0 +1,28 @@
+{
+  "namespace": "ru.maxsbk.sensortelemetrysystem.models",
+  "type": "record",
+  "name": "Measurement",
+  "doc": "Информация о измерении",
+  "fields": [
+    {
+      "name": "sensorInfo",
+      "type": "SensorInfo",
+      "doc": "Информация о датчике"
+    },
+    {
+      "name": "place",
+      "type": "string",
+      "doc": "Место замера"
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "doc": "Единица измерения"
+    },
+    {
+      "name": "value",
+      "type": "double",
+      "doc": "Значение измерения"
+    }
+  ]
+}
