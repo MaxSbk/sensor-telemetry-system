@@ -4,10 +4,10 @@ import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
 import akka.kafka.ConsumerMessage.{CommittableMessage, CommittableOffset}
 import akka.kafka.Subscriptions
+import akka.kafka.scaladsl.Consumer.DrainingControl
 import akka.kafka.scaladsl.{Committer, Consumer}
 import akka.stream.alpakka.influxdb.InfluxDbWriteMessage
 import akka.stream.alpakka.influxdb.scaladsl.InfluxDbFlow
-import akka.stream.scaladsl.Keep
 import com.typesafe.config.{Config, ConfigFactory}
 import org.influxdb.dto.Point
 import org.influxdb.{InfluxDB, InfluxDBFactory}
@@ -25,7 +25,7 @@ object App {
 
 class App {
   implicit val system: ActorSystem          = ActorSystem("sensor-data-ingestion-system")
-  val projectConfig                         = ProjectConfig(system.settings.config)
+  val projectConfig: ProjectConfig          = ProjectConfig(system.settings.config)
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   implicit val influxDB: InfluxDB = InfluxDBFactory
     .connect(
@@ -44,32 +44,31 @@ class App {
         Subscriptions.topics(projectConfig.kafkaConfig.topic)
       )
 
-        val influxWriteMessageFlow = source.mapAsync(10) { kafkaMessage =>
-          influxWrite(kafkaMessage)
-        }
+    val influxWriteMessageFlow = source.mapAsync(10) { kafkaMessage =>
+      influxWrite(kafkaMessage)
+    }
 
-        val influxResultFlow =
-          influxWriteMessageFlow
-            .grouped(1)
-            .via(InfluxDbFlow.createWithPassThrough)
+    val influxResultFlow =
+      influxWriteMessageFlow
+        .grouped(1)
+        .via(InfluxDbFlow.createWithPassThrough)
 
-        val mapperFlow = influxResultFlow
-          .map(x => x.headOption.flatMap(f => Some(f.writeMessage.passThrough)))
-          .collect {
-            case Some(x) => x
-          }
+    val mapperFlow = influxResultFlow
+      .map(x => x.headOption.flatMap(f => Some(f.writeMessage.passThrough)))
+      .collect {
+        case Some(x) => x
+      }
 
-    mapperFlow.toMat(Committer.sinkWithOffsetContext(projectConfig.kafkaConfig.committerSettings))(Keep.right)
+    mapperFlow
+      .toMat(Committer.sink(projectConfig.kafkaConfig.committerSettings))(DrainingControl.apply)
       .run()
-
-
 
   }
 
   def influxWrite(
-                   kafkaMessage: CommittableMessage[String, Measurement]
-                 )(implicit ec: ExecutionContextExecutor
-                 ): Future[InfluxDbWriteMessage[Point, CommittableOffset]] = {
+    kafkaMessage: CommittableMessage[String, Measurement]
+  )(implicit ec: ExecutionContextExecutor
+  ): Future[InfluxDbWriteMessage[Point, CommittableOffset]] = {
     val meas = kafkaMessage.record.value()
     logger.debug(s"New Measurement Value: $meas")
     Future(

@@ -21,12 +21,7 @@
     },
     {
       "name": "value",
-      "type": {
-        "type": "bytes",
-        "logicalType": "decimal",
-        "precision": 18,
-        "scale": 2
-      },
+      "type": "double",
       "doc": "Значение измерения"
     }
   ]
