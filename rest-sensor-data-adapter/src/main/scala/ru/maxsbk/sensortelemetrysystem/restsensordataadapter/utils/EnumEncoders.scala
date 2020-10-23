@@ -1,6 +1,6 @@
 package ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils
 
-import io.circe.{Decoder, Encoder}
+import io.circe.{ Decoder, Encoder }
 import ru.maxsbk.sensortelemetrysystem.models.SensorType
 
 import scala.util.Try

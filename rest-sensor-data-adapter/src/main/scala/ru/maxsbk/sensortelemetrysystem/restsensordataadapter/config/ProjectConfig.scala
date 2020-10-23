@@ -1,12 +1,12 @@
 package ru.maxsbk.sensortelemetrysystem.restsensordataadapter.config
 
 import com.typesafe.config.ConfigFactory
-import pureconfig.{ConfigReader, ConfigSource, Exported}
+import pureconfig.{ ConfigReader, ConfigSource, Exported }
 import pureconfig.generic.auto.exportReader
 import scala.util.Right
 
 object ProjectConfig {
-  val rootPath = "initial-state-processor"
+  val rootPath                                                   = "initial-state-processor"
   implicit val derivation: Exported[ConfigReader[ProjectConfig]] = exportReader[ProjectConfig]
   def apply(): ProjectConfig = {
     val rootConfig = ConfigFactory.load().getConfig(rootPath)

@@ -2,19 +2,19 @@ package ru.maxsbk.sensortelemetrysystem.sensordatamanagement
 
 import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
-import akka.kafka.ConsumerMessage.{CommittableMessage, CommittableOffset}
+import akka.kafka.ConsumerMessage.{ CommittableMessage, CommittableOffset }
 import akka.kafka.Subscriptions
 import akka.kafka.scaladsl.Consumer.DrainingControl
-import akka.kafka.scaladsl.{Committer, Consumer}
+import akka.kafka.scaladsl.{ Committer, Consumer }
 import akka.stream.alpakka.influxdb.InfluxDbWriteMessage
 import akka.stream.alpakka.influxdb.scaladsl.InfluxDbFlow
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.influxdb.dto.Point
-import org.influxdb.{InfluxDB, InfluxDBFactory}
+import org.influxdb.{ InfluxDB, InfluxDBFactory }
 import ru.maxsbk.sensortelemetrysystem.models.Measurement
 import ru.maxsbk.sensortelemetrysystem.sensordatamanagement.config.ProjectConfig
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.{ ExecutionContextExecutor, Future }
 
 object App {
   val AppConfig: Config = ConfigFactory.load()
