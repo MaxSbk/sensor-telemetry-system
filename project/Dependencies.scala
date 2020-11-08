@@ -9,6 +9,7 @@ object Version {
   val Slf4jApi        = "1.7.30"
   val Log4jSlf4jImpl  = "2.13.0"
   val AlpakkaInfluxDb = "2.0.2"
+  val AlpakkaMQTT     = "2.0.2"
   val AlpakkaKafka    = "2.0.5"
   val Bijection       = "0.9.7"
   val Circe           = "0.13.0"
@@ -27,6 +28,7 @@ object Dependencies {
   object Alpakka {
     lazy val Influx = "com.lightbend.akka" %% "akka-stream-alpakka-influxdb" % Version.AlpakkaInfluxDb
     lazy val Kafka  = "com.typesafe.akka"  %% "akka-stream-kafka"            % Version.AlpakkaKafka
+    lazy val Mqtt   = "com.lightbend.akka" %% "akka-stream-alpakka-mqtt"     % Version.AlpakkaMQTT
   }
 
   object Common {

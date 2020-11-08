@@ -114,7 +114,7 @@ services:
     networks:
       - mqtt_net
     environment:
-      MQTT_URL: 'http://mqtt:1883'
+      MQTT_URL: 'tcp://mqtt:1883'
 networks:
   influxdb_net: null
   kafka_net: null
