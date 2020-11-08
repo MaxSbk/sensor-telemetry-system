@@ -2,8 +2,8 @@ package ru.maxsbk.sensortelemetrysystem.adapters.mqtt
 
 import akka.Done
 import akka.actor.ActorSystem
-import akka.stream.alpakka.mqtt.{MqttConnectionSettings, MqttQoS, MqttSubscriptions}
 import akka.stream.alpakka.mqtt.scaladsl.{MqttMessageWithAck, MqttSource}
+import akka.stream.alpakka.mqtt.{MqttConnectionSettings, MqttQoS, MqttSubscriptions}
 import akka.stream.scaladsl.{Sink, Source}
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import ru.maxsbk.sensortelemetrysystem.adapters.mqtt.config.ProjectConfig
@@ -26,7 +26,6 @@ object Main {
     val mqttSource: Source[MqttMessageWithAck, Future[Done]] =
       MqttSource.atLeastOnce(
         connectionSettings
-          .withClientId(clientId = "source-spec/source1")
           .withCleanSession(false),
         MqttSubscriptions(testingTopic, MqttQoS.AtLeastOnce),
         bufferSize = 8
@@ -36,7 +35,9 @@ object Main {
       .mapAsync(1)(messageWithAck => messageWithAck.ack().map(_ => messageWithAck.message))
       .map{mqttMessage =>
         println(s"Message: ${mqttMessage.payload.utf8String}")
+        mqttMessage
       }
-      .runWith(Sink.seq)
+      .runWith(Sink.ignore)
+
   }
 }
