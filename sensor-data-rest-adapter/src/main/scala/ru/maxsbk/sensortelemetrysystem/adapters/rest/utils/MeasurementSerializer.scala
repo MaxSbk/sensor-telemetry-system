@@ -1,4 +1,4 @@
-package ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils
+package ru.maxsbk.sensortelemetrysystem.adapters.rest.utils
 
 import com.twitter.bijection.Injection
 import com.twitter.bijection.avro.SpecificAvroCodecs

@@ -1,11 +1,11 @@
-package ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils
+package ru.maxsbk.sensortelemetrysystem.adapters.rest.utils
 
 import java.util.Properties
 
 import org.apache.kafka.clients.producer.{ KafkaProducer, ProducerConfig, ProducerRecord }
 import org.slf4j.Logger
 import ru.maxsbk.sensortelemetrysystem.models.Measurement
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils.ProducerAskResponses.{
+import ProducerAskResponses.{
   AskResponse,
   ProduceTaskCreated,
   ProduceTaskFaulted

@@ -1,4 +1,4 @@
-package ru.maxsbk.sensortelemetrysystem.restsensordataadapter.config
+package ru.maxsbk.sensortelemetrysystem.adapters.rest.config
 
 import com.typesafe.config.ConfigFactory
 import pureconfig.{ ConfigReader, ConfigSource, Exported }
