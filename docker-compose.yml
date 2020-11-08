@@ -113,6 +113,7 @@ services:
       - data-ingestor
     networks:
       - mqtt_net
+      - kafka_net
     environment:
       MQTT_URL: 'tcp://mqtt:1883'
 networks:
