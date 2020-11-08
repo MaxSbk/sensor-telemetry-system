@@ -14,7 +14,7 @@ object Main {
   private val systemConfig                  = ProjectConfig()
   implicit val system: ActorSystem          = ActorSystem("sensor-data-ingestion-system")
   implicit val ec: ExecutionContextExecutor = system.dispatcher
-  def main(args: Array[String]) = {
+  def main(args: Array[String]): Unit = {
     val connectionSettings = MqttConnectionSettings(
       systemConfig.mqttBroker.url,
       "test-scala-client",
