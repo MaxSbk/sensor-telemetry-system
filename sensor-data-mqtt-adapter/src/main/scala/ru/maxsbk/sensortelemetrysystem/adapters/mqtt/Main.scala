@@ -34,6 +34,9 @@ object Main {
 
     mqttSource
       .mapAsync(1)(messageWithAck => messageWithAck.ack().map(_ => messageWithAck.message))
+      .map{mqttMessage =>
+        println(s"Message: ${mqttMessage.payload.utf8String}")
+      }
       .runWith(Sink.seq)
   }
 }
