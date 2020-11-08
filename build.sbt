@@ -29,7 +29,7 @@ lazy val sensorDataManagement = appModule("sensor-data-ingestor")
   )
   .dependsOn(dataModels)
 
-lazy val restSensorDataAdapter = appModule("rest-sensor-data-adapter")
+lazy val restSensorDataAdapter = appModule("sensor-data-rest-adapter")
   .enablePlugins(JavaAppPackaging, DockerPlugin, AshScriptPlugin)
   .settings(
     mainClass in (Compile) := Some("ru.maxsbk.sensortelemetrysystem.restsensordataadapter.Main"),
@@ -53,6 +53,9 @@ lazy val restSensorDataAdapter = appModule("rest-sensor-data-adapter")
     )
   )
   .dependsOn(dataModels)
+
+lazy val mqttSensorDataAdapter = appModule("sensor-data-mqtt-adapter")
+  .enablePlugins(JavaAppPackaging, DockerPlugin, AshScriptPlugin)
 
 def appModule(moduleID: String): Project = {
   Project(id = moduleID, base = file(moduleID))

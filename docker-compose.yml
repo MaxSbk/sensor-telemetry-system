@@ -71,6 +71,14 @@ services:
       INFLUXDB_URL: 'http://influxdb:8086'
       INFLUXDB_USERNAME: sensors
       INFLUXDB_PASSWORD: sensors
+  mqtt:
+    image: toke/mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - 'mqtt-storage:/mqtt/config/conf.d'
+    networks:
+      - mqtt_net
   data-ingestor:
     build: ./sensor-data-ingestor/target/docker/stage
     depends_on:
@@ -87,7 +95,7 @@ services:
       KAFKA_URL: 'http://kafka:29092'
       KAFKA_TOPIC: sensor-data
   rest-adapter:
-    build: ./rest-sensor-data-adapter/target/docker/stage
+    build: sensor-data-rest-adapter/target/docker/stage
     depends_on:
       - kafka
       - data-ingestor
@@ -101,6 +109,8 @@ services:
 networks:
   influxdb_net: null
   kafka_net: null
+  mqtt_net: null
 volumes:
   influxdb-storage: null
   chronograf-storage: null
+  mqtt-storage: null
