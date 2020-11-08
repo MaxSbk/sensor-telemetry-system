@@ -13,7 +13,6 @@ import ru.maxsbk.sensortelemetrysystem.adapters.rest.actors.SensorDataProducer
 import ru.maxsbk.sensortelemetrysystem.adapters.rest.config.ProjectConfig
 import ru.maxsbk.sensortelemetrysystem.adapters.rest.utils.{EnumEncoders, ProducerAskResponses}
 import ru.maxsbk.sensortelemetrysystem.models.Measurement
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils.{EnumEncoders, ProducerAskResponses}
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}

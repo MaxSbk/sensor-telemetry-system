@@ -7,8 +7,6 @@ import ru.maxsbk.sensortelemetrysystem.adapters.rest.config.ProjectConfig
 import ru.maxsbk.sensortelemetrysystem.adapters.rest.utils.ProducerAskResponses.AskResponse
 import ru.maxsbk.sensortelemetrysystem.adapters.rest.utils.{ActorLogHelper, KafkaHelper}
 import ru.maxsbk.sensortelemetrysystem.models.Measurement
-import ru.maxsbk.sensortelemetrysystem.adapters.rest.utils.ProducerAskResponses.AskResponse
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils.{ActorLogHelper, KafkaHelper}
 
 import scala.util.Try
 
