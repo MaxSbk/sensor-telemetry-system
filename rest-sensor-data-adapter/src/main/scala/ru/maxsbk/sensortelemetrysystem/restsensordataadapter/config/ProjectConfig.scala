@@ -6,7 +6,7 @@ import pureconfig.generic.auto.exportReader
 import scala.util.Right
 
 object ProjectConfig {
-  val rootPath                                                   = "initial-state-processor"
+  val rootPath                                                   = "sensor-data-rest-adapter"
   implicit val derivation: Exported[ConfigReader[ProjectConfig]] = exportReader[ProjectConfig]
   def apply(): ProjectConfig = {
     val rootConfig = ConfigFactory.load().getConfig(rootPath)
