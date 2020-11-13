@@ -27,6 +27,7 @@ class App {
   implicit val system: ActorSystem          = ActorSystem("sensor-data-ingestion-system")
   val projectConfig: ProjectConfig          = ProjectConfig(system.settings.config)
   implicit val ec: ExecutionContextExecutor = system.dispatcher
+  val logger: LoggingAdapter                = system.log
   implicit val influxDB: InfluxDB = InfluxDBFactory
     .connect(
       projectConfig.influxConfig.url,
@@ -35,8 +36,6 @@ class App {
     )
     .setDatabase(projectConfig.influxConfig.dbName)
 
-  val logger: LoggingAdapter = system.log
-
   def startApp(): Unit = {
     val source = Consumer
       .committableSource(
@@ -44,7 +43,7 @@ class App {
         Subscriptions.topics(projectConfig.kafkaConfig.topic)
       )
 
-    val influxWriteMessageFlow = source.mapAsync(10) { kafkaMessage =>
+    val influxWriteMessageFlow = source.mapAsync(projectConfig.kafkaConfig.asyncMapParallelism) { kafkaMessage =>
       influxWrite(kafkaMessage)
     }
 
