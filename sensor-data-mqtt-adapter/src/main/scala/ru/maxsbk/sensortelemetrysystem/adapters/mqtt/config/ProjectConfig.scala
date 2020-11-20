@@ -30,7 +30,7 @@ object MqttBroker {
   val Empty: MqttBroker = new MqttBroker()
 }
 
-case class MqttBroker(url: String = "", clientId: String = "")
+case class MqttBroker(url: String = "", clientId: String = "", defaultBufferSize: Int = 0)
 
 object KafkaConfig {
   val Empty: KafkaConfig = new KafkaConfig()
