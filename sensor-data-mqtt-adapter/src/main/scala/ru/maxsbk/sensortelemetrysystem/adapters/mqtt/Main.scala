@@ -15,18 +15,16 @@ object Main {
   implicit val system: ActorSystem          = ActorSystem("sensor-data-ingestion-system")
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   def main(args: Array[String]): Unit = {
+    val testingTopic = "topic"
     val connectionSettings = MqttConnectionSettings(
       systemConfig.mqttBroker.url,
-      "test-scala-client",
+      systemConfig.mqttBroker.clientId,
       new MemoryPersistence
     )
 
-    val testingTopic = "topic"
-
     val mqttSource: Source[MqttMessageWithAck, Future[Done]] =
       MqttSource.atLeastOnce(
-        connectionSettings
-          .withCleanSession(false),
+        connectionSettings,
         MqttSubscriptions(testingTopic, MqttQoS.AtLeastOnce),
         bufferSize = 8
       )
