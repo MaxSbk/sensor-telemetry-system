@@ -2,7 +2,7 @@ package ru.maxsbk.sensortelemetrysystem.sensordatamanagement
 
 import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
-import akka.kafka.ConsumerMessage.{ CommittableMessage, CommittableOffset }
+import akka.kafka.ConsumerMessage.{ CommittableMessage, CommittableOffset, CommittableOffsetBatch }
 import akka.kafka.Subscriptions
 import akka.kafka.scaladsl.Consumer.DrainingControl
 import akka.kafka.scaladsl.{ Committer, Consumer }
@@ -14,6 +14,7 @@ import org.influxdb.{ InfluxDB, InfluxDBFactory }
 import ru.maxsbk.sensortelemetrysystem.models.Measurement
 import ru.maxsbk.sensortelemetrysystem.sensordatamanagement.config.ProjectConfig
 
+import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ ExecutionContextExecutor, Future }
 
 object App {
@@ -47,18 +48,15 @@ class App {
       influxWrite(kafkaMessage)
     }
 
-    val influxResultFlow =
-      influxWriteMessageFlow
-        .grouped(1)
-        .via(InfluxDbFlow.createWithPassThrough)
-
-    val mapperFlow = influxResultFlow
-      .map(x => x.headOption.flatMap(f => Some(f.writeMessage.passThrough)))
-      .collect {
-        case Some(x) => x
-      }
-
-    mapperFlow
+    influxWriteMessageFlow
+      .groupedWithin(projectConfig.kafkaConfig.groupMaxElems, projectConfig.kafkaConfig.groupTimeWindow)
+      .via(InfluxDbFlow.createWithPassThrough)
+      .map(x => x.flatMap(f => Some(f.writeMessage.passThrough)))
+      .map(group =>
+        group.foldLeft(CommittableOffsetBatch.empty) { (batch, elem) =>
+          batch.updated(elem)
+        }
+      )
       .toMat(Committer.sink(projectConfig.kafkaConfig.committerSettings))(DrainingControl.apply)
       .run()
 

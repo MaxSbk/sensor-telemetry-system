@@ -1,10 +1,13 @@
 package ru.maxsbk.sensortelemetrysystem.sensordatamanagement.config
 
-import akka.kafka.{ CommitterSettings, ConsumerSettings }
+import akka.kafka.{CommitterSettings, ConsumerSettings}
 import com.typesafe.config.Config
 import org.apache.kafka.common.serialization.StringDeserializer
 import ru.maxsbk.sensortelemetrysystem.models.Measurement
 import ru.maxsbk.sensortelemetrysystem.sensordatamanagement.utils.MeasurementDeserializer
+
+import scala.jdk.DurationConverters._
+import scala.concurrent.duration.{Duration, FiniteDuration}
 
 object ProjectConfig {
   private val ConfigPath: String = "sensor-data-ingestor"
@@ -19,18 +22,15 @@ object ProjectConfig {
 case class ProjectConfig(kafkaConfig: KafkaConfig, influxConfig: InfluxConfig)
 
 object KafkaConfig {
-  private val ConfigPath               = "kafka-consumer"
-  private val CommitterConfigPath      = "kafka-committer"
-  private val AsyncMapParallelismCount = "async-parallelism-count"
-  private val TopicConfigPath          = "listening-topic"
-
   def apply(config: Config): KafkaConfig = {
-    val thisConfig          = config.getConfig(ConfigPath)
+    val thisConfig          = config.getConfig("kafka-consumer")
     val consumerSettings    = ConsumerSettings(thisConfig, new StringDeserializer, new MeasurementDeserializer)
-    val committerSettings   = CommitterSettings(config.getConfig(CommitterConfigPath))
-    val asyncMapParallelism = thisConfig.getInt(AsyncMapParallelismCount)
-    val topicName           = thisConfig.getString(TopicConfigPath)
-    new KafkaConfig(consumerSettings, committerSettings, asyncMapParallelism, topicName)
+    val committerSettings   = CommitterSettings(config.getConfig("kafka-committer"))
+    val asyncMapParallelism = thisConfig.getInt("async-parallelism-count")
+    val topicName           = thisConfig.getString("listening-topic")
+    val groupMaxElems       = thisConfig.getInt("group-max-elems")
+    val groupTimeWindow     = thisConfig.getDuration("group-time-window").toScala
+    new KafkaConfig(consumerSettings, committerSettings, asyncMapParallelism, topicName, groupMaxElems, groupTimeWindow)
   }
 }
 
@@ -38,7 +38,9 @@ case class KafkaConfig(
   consumerSettings: ConsumerSettings[String, Measurement],
   committerSettings: CommitterSettings,
   asyncMapParallelism: Int,
-  topic: String)
+  topic: String,
+  groupMaxElems: Int,
+  groupTimeWindow: FiniteDuration)
 
 object InfluxConfig {
   private val ConfigPath             = "influx-db"
