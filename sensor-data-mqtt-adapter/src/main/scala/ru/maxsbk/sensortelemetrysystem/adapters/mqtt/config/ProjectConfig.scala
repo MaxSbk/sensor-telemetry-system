@@ -24,7 +24,8 @@ object ProjectConfig {
 
 case class ProjectConfig(
   mqttBroker: MqttBroker = MqttBroker.Empty,
-  kafkaConfig: KafkaConfig = KafkaConfig.Empty)
+  kafkaConfig: KafkaConfig = KafkaConfig.Empty,
+  measurementTemplate: String = "")
 
 object MqttBroker {
   val Empty: MqttBroker = new MqttBroker()

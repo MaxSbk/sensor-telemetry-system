@@ -63,6 +63,8 @@ lazy val mqttSensorDataAdapter = appModule("sensor-data-mqtt-adapter")
       Akka.Stream,
       Alpakka.Kafka,
       Alpakka.Mqtt,
+      Common.BijectionCore,
+      Common.BijectionAvro,
       Common.PureConfig,
       Logging.Slf4jApi,
       Logging.Log4jSlf4jImpl,
