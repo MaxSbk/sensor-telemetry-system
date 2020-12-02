@@ -116,6 +116,8 @@ services:
       - kafka_net
     environment:
       MQTT_URL: 'tcp://mqtt:1883'
+      KAFKA_URL: 'http://kafka:29092'
+      KAFKA_TOPIC: sensor-data
 networks:
   influxdb_net: null
   kafka_net: null

@@ -1,6 +1,7 @@
 package ru.maxsbk.sensortelemetrysystem.adapters.mqtt
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 import akka.Done
 import akka.actor.ActorSystem
@@ -29,6 +30,8 @@ object Main {
       .withBootstrapServers(systemConfig.kafkaConfig.bootstrapServers)
 
   def main(args: Array[String]): Unit = {
+    system.log.info(s"Adapter start with $systemConfig")
+    println(s"Adapter start with $systemConfig")
     val testingTopic = "topic"
     val connectionSettings = MqttConnectionSettings(
       systemConfig.mqttBroker.url,
@@ -44,14 +47,16 @@ object Main {
       )
 
     mqttSource
-      .mapAsync(1)(messageWithAck => messageWithAck.ack().map(_ => messageWithAck.message))
+      .mapAsync(20)(messageWithAck => messageWithAck.ack().map(_ => messageWithAck.message))
       .map { mqttMessage =>
+        println(s"message: ${mqttMessage.payload.utf8String}")
         val regEx = systemConfig.measurementTemplate.r
         mqttMessage.payload.utf8String match {
           case regEx(sensorType, sensorName, sensorId, date, place, unit, value) =>
+            println("Valid message")
             Some(
               Measurement(
-                SensorInfo(Some(sensorName), sensorId, LocalDate.parse(date), SensorType.valueOf(sensorType)),
+                SensorInfo(Some(sensorName), sensorId, LocalDate.parse(date,DateTimeFormatter.ofPattern("dd.MM.yyyy")), SensorType.valueOf(sensorType)),
                 place,
                 unit,
                 value.toDouble
@@ -59,12 +64,13 @@ object Main {
             )
           case _ =>
             system.log.warning(s"Message $mqttMessage is incorrect")
-            None
+            Option.empty[Measurement]
         }
       }
-      .collect {
+      .map {
         case Some(measurement) =>
-          new ProducerRecord[String, Measurement](measurement.sensorInfo.id, measurement)
+          println(s"Valid meas: $measurement")
+          new ProducerRecord[String, Measurement](systemConfig.kafkaConfig.topic, measurement)
       }
       .runWith(Producer.plainSink(producerSettings))
 
