@@ -1,12 +1,12 @@
-package ru.maxsbk.sensortelemetrysystem.restsensordataadapter.actors
+package ru.maxsbk.sensortelemetrysystem.adapters.rest.actors
 
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ ActorRef, Behavior, PostStop, PreRestart }
+import akka.actor.typed.{ActorRef, Behavior, PostStop, PreRestart}
 import org.apache.kafka.clients.producer.KafkaProducer
+import ru.maxsbk.sensortelemetrysystem.adapters.rest.config.ProjectConfig
+import ru.maxsbk.sensortelemetrysystem.adapters.rest.utils.ProducerAskResponses.AskResponse
+import ru.maxsbk.sensortelemetrysystem.adapters.rest.utils.{ActorLogHelper, KafkaHelper}
 import ru.maxsbk.sensortelemetrysystem.models.Measurement
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.config.ProjectConfig
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils.ProducerAskResponses.AskResponse
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils.{ ActorLogHelper, KafkaHelper }
 
 import scala.util.Try
 

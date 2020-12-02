@@ -1,11 +1,11 @@
-package ru.maxsbk.sensortelemetrysystem.restsensordataadapter
+package ru.maxsbk.sensortelemetrysystem.adapters.rest
 
-import akka.actor.typed.{ ActorRef, Behavior, SupervisorStrategy }
-import akka.actor.typed.scaladsl.{ ActorContext, Behaviors, Routers }
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.actors.SensorDataProducer
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.config.ProjectConfig
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.routes.MainRoutes
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils.HttpServerHelper
+import akka.actor.typed.{ActorRef, Behavior, SupervisorStrategy}
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors, Routers}
+import ru.maxsbk.sensortelemetrysystem.adapters.rest.actors.SensorDataProducer
+import ru.maxsbk.sensortelemetrysystem.adapters.rest.config.ProjectConfig
+import ru.maxsbk.sensortelemetrysystem.adapters.rest.routes.MainRoutes
+import ru.maxsbk.sensortelemetrysystem.adapters.rest.utils.HttpServerHelper
 
 object RestSensorDataAdapter extends HttpServerHelper {
   private val systemConfig = ProjectConfig()

@@ -29,10 +29,10 @@ lazy val sensorDataManagement = appModule("sensor-data-ingestor")
   )
   .dependsOn(dataModels)
 
-lazy val restSensorDataAdapter = appModule("rest-sensor-data-adapter")
+lazy val restSensorDataAdapter = appModule("sensor-data-rest-adapter")
   .enablePlugins(JavaAppPackaging, DockerPlugin, AshScriptPlugin)
   .settings(
-    mainClass in (Compile) := Some("ru.maxsbk.sensortelemetrysystem.restsensordataadapter.Main"),
+    mainClass in (Compile) := Some("ru.maxsbk.sensortelemetrysystem.adapters.rest.Main"),
     libraryDependencies ++= Seq(
       Akka.Actor,
       Akka.Stream,
@@ -46,6 +46,26 @@ lazy val restSensorDataAdapter = appModule("rest-sensor-data-adapter")
       Common.CirceGeneric,
       Common.CirceParser,
       Common.AkkaHttpCircle,
+      Logging.Slf4jApi,
+      Logging.Log4jSlf4jImpl,
+      Testing.ScalaTest,
+      Testing.ActorTestKit
+    )
+  )
+  .dependsOn(dataModels)
+
+lazy val mqttSensorDataAdapter = appModule("sensor-data-mqtt-adapter")
+  .enablePlugins(JavaAppPackaging, DockerPlugin, AshScriptPlugin)
+  .settings(
+    mainClass in (Compile) := Some("ru.maxsbk.sensortelemetrysystem.adapters.mqtt.Main"),
+    libraryDependencies ++= Seq(
+      Akka.Actor,
+      Akka.Stream,
+      Alpakka.Kafka,
+      Alpakka.Mqtt,
+      Common.BijectionCore,
+      Common.BijectionAvro,
+      Common.PureConfig,
       Logging.Slf4jApi,
       Logging.Log4jSlf4jImpl,
       Testing.ScalaTest,

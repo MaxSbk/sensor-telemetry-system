@@ -1,21 +1,21 @@
-package ru.maxsbk.sensortelemetrysystem.restsensordataadapter.routes
+package ru.maxsbk.sensortelemetrysystem.adapters.rest.routes
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.typed.scaladsl.AskPattern.{ schedulerFromActorSystem, Askable }
-import akka.actor.typed.{ ActorRef, ActorSystem }
+import akka.actor.typed.scaladsl.AskPattern.{Askable, schedulerFromActorSystem}
+import akka.actor.typed.{ActorRef, ActorSystem}
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server.{ Directives, Route }
+import akka.http.scaladsl.server.{Directives, Route}
 import akka.util.Timeout
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
+import ru.maxsbk.sensortelemetrysystem.adapters.rest.actors.SensorDataProducer
+import ru.maxsbk.sensortelemetrysystem.adapters.rest.config.ProjectConfig
+import ru.maxsbk.sensortelemetrysystem.adapters.rest.utils.{EnumEncoders, ProducerAskResponses}
 import ru.maxsbk.sensortelemetrysystem.models.Measurement
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.actors.SensorDataProducer
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.config.ProjectConfig
-import ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils.{ EnumEncoders, ProducerAskResponses }
 
 import scala.concurrent.Future
-import scala.util.{ Failure, Success }
+import scala.util.{Failure, Success}
 
 class MainRoutes(
   config: ProjectConfig,

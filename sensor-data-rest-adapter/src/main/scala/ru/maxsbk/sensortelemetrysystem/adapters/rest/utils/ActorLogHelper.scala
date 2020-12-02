@@ -1,4 +1,4 @@
-package ru.maxsbk.sensortelemetrysystem.restsensordataadapter.utils
+package ru.maxsbk.sensortelemetrysystem.adapters.rest.utils
 
 import akka.actor.typed.scaladsl.ActorContext
 

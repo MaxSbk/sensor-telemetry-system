@@ -1,4 +1,4 @@
-package ru.maxsbk.sensortelemetrysystem.restsensordataadapter
+package ru.maxsbk.sensortelemetrysystem.adapters.rest
 
 import akka.actor.typed.ActorSystem
 
