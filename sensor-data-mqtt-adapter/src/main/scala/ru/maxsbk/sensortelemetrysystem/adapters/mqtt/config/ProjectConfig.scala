@@ -25,13 +25,14 @@ object ProjectConfig {
 case class ProjectConfig(
   mqttBroker: MqttBroker = MqttBroker.Empty,
   kafkaConfig: KafkaConfig = KafkaConfig.Empty,
-  measurementTemplate: String = "")
+  measurementTemplate: String = "",
+  datePattern: String = "")
 
 object MqttBroker {
   val Empty: MqttBroker = new MqttBroker()
 }
 
-case class MqttBroker(url: String = "", clientId: String = "", defaultBufferSize: Int = 0)
+case class MqttBroker(url: String = "", clientId: String = "", defaultBufferSize: Int = 0, asyncParallelismCount: Int = 0)
 
 object KafkaConfig {
   val Empty: KafkaConfig = new KafkaConfig()
