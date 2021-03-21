@@ -13,6 +13,7 @@ lazy val sensorDataManagement = appModule("sensor-data-ingestor")
   .enablePlugins(JavaAppPackaging, DockerPlugin, AshScriptPlugin)
   .settings(
     mainClass in (Compile) := Some("ru.maxsbk.sensortelemetrysystem.sensordatamanagement.Main"),
+    packageName in Docker := "sensor-data-ingestor",
     libraryDependencies ++= Seq(
       Akka.Actor,
       Akka.Stream,
@@ -33,6 +34,7 @@ lazy val restSensorDataAdapter = appModule("sensor-data-rest-adapter")
   .enablePlugins(JavaAppPackaging, DockerPlugin, AshScriptPlugin)
   .settings(
     mainClass in (Compile) := Some("ru.maxsbk.sensortelemetrysystem.adapters.rest.Main"),
+    packageName in Docker := "sensor-data-rest-adapter",
     libraryDependencies ++= Seq(
       Akka.Actor,
       Akka.Stream,
@@ -58,6 +60,7 @@ lazy val mqttSensorDataAdapter = appModule("sensor-data-mqtt-adapter")
   .enablePlugins(JavaAppPackaging, DockerPlugin, AshScriptPlugin)
   .settings(
     mainClass in (Compile) := Some("ru.maxsbk.sensortelemetrysystem.adapters.mqtt.Main"),
+    packageName in Docker := "sensor-data-mqtt-adapter",
     libraryDependencies ++= Seq(
       Akka.Actor,
       Akka.Stream,
