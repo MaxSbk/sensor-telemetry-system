@@ -27,7 +27,7 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
   influxdb:
-    image: 'influxdb:latest'
+    image: 'influxdb:1.8.10'
     deploy:
       replicas: 1
       update_config:
@@ -38,9 +38,7 @@ services:
     networks:
       - influxdb_net
     ports:
-      - '8083:8083'
       - '8086:8086'
-      - '2003:2003'
     volumes:
       - 'influxdb-storage:/var/lib/influxdb'
     environment:
@@ -51,7 +49,7 @@ services:
       INFLUXDB_ADMIN_USER: sensors
       INFLUXDB_ADMIN_PASSWORD: sensors
   chronograf:
-    image: 'chronograf:latest'
+    image: 'chronograf:1.9.1'
     deploy:
       replicas: 1
       update_config:
@@ -63,7 +61,6 @@ services:
     networks:
       - influxdb_net
     ports:
-      - '8088:8088'
       - '8888:8888'
     volumes:
       - 'chronograf-storage:/var/lib/chronograf'
@@ -71,6 +68,18 @@ services:
       INFLUXDB_URL: 'http://influxdb:8086'
       INFLUXDB_USERNAME: sensors
       INFLUXDB_PASSWORD: sensors
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana-provisioning/:/etc/grafana/provisioning
+    depends_on:
+      - influxdb
+    environment:
+      - GF_SECURITY_ADMIN_USER=grafana
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
   mqtt:
     image: toke/mosquitto
     ports:
@@ -123,6 +132,7 @@ networks:
   kafka_net: null
   mqtt_net: null
 volumes:
-  influxdb-storage: null
-  chronograf-storage: null
-  mqtt-storage: null
+  influxdb-storage: {}
+  chronograf-storage: {}
+  mqtt-storage: {}
+  grafana-storage: {}
